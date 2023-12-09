@@ -66,22 +66,12 @@ class Utils {
         endif;
     }
 
-    public static function getCachedPlayers(){
-        $cfg = new Config(Main::getInstance()->getDataFolder() . "cached.yml", Config::YAML);
-        return $cfg->get("players");
-    }
-
-    public static function getCachedMaxPlayers(){
-        $cfg = new Config(Main::getInstance()->getDataFolder() . "cached.yml", Config::YAML);
-        return $cfg->get("maxPlayers");
-    }
-
     public static function getPlayersCount(string $server): string|int{
-        $cfg = new Config(Main::getInstance()->getDataFolder() . "cached.yml", Config::YAML);
-        if((int)$cfg->get("servers")[$server] <= -1){
+        $servers = Main::getInstance()->servers;
+        if((int)$servers[$server] <= -1){
             return "Error";
         }
-        return (int)$cfg->get("servers")[$server];
+        return (int)$servers[$server];
     }
 
     public static function addKitLobby(Player $player){

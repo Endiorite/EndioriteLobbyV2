@@ -16,11 +16,13 @@ class AntiMultiManager
         $this->players[$playerName] = ["player" => $toPlayer, "time" => time() + 10];
     }
 
-    public function removePlayerToPlayer(string $playerName){
+    public function removePlayerToPlayer(string $playerName): void
+    {
         unset($this->players[$playerName]);
     }
 
-    public function existsPlayer(string $playerName){
+    public function existsPlayer(string $playerName): bool
+    {
         return isset($this->players[$playerName]);
     }
 
@@ -38,11 +40,13 @@ class AntiMultiManager
         return $this->players[$playerName]["player"];
     }
 
-    public function unsetPlayer(string $playerName){
+    public function unsetPlayer(string $playerName): void
+    {
         unset($this->players[$playerName]);
     }
 
-    public function hisPlayerTo(string $playerDamaged, string $damager){
+    public function hisPlayerTo(string $playerDamaged, string $damager): bool
+    {
         if (!$this->existsPlayer($playerDamaged)) return false;
         if ($this->players[$playerDamaged]["player"] === $damager){
             return true;

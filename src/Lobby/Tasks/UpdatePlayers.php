@@ -2,6 +2,7 @@
 
 namespace Lobby\Tasks;
 
+use Lobby\Main;
 use Lobby\Utils\Utils;
 use pocketmine\scheduler\AsyncTask;
 use libpmquery\PMQuery;
@@ -36,12 +37,9 @@ class UpdatePlayers extends AsyncTask
 
     public function onCompletion() : void{
         $res = $this->getResult();
-        $cfg = new Config("/home/container/plugin_data/EndioriteLobby/cached.yml", Config::YAML);
-        $cfg->set("players", $res['count']);
-        $cfg->save();
-        $cfg->set("maxPlayers", $res['maxPlayers']);
-        $cfg->save();
-        $cfg->set("servers", $res['servers']);
-        $cfg->save();
+
+        Main::getInstance()->players = $res['count'];
+        Main::getInstance()->maxPlayers = $res['maxPlayers'];
+        Main::getInstance()->servers = $res['servers'];
     }
 }

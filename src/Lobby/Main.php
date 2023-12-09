@@ -6,7 +6,6 @@ use Lobby\Managers\AntiMultiManager;
 use Lobby\Tasks\QueueTask;
 use Lobby\Tasks\UpdateTask;
 use Lobby\Utils\Loader;
-use Lobby\Tasks\RepeatedTask;
 use Lobby\Utils\Utils;
 use muqsit\invmenu\InvMenuHandler;
 use pocketmine\event\Listener;
@@ -24,6 +23,10 @@ class Main extends PluginBase implements Listener {
 
     public static array $connected = [];
     public static ?PluginContent $content;
+
+    public int $players = 0;
+    public int $maxPlayers = 50;
+    public array $servers = [];
 
     protected function onLoad(): void
     {
@@ -53,14 +56,14 @@ class Main extends PluginBase implements Listener {
         Server::getInstance()->getNetwork()->setName("§9§lEndiorite §fV3");
         Server::getInstance()->getWorldManager()->loadWorld("FFA2");
         Server::getInstance()->getWorldManager()->loadWorld("COMBO");
-        var_dump($this->getDataFolder());
+
         Server::getInstance()->getWorldManager()->getDefaultWorld();
 
     }
 
     public function queryRegenerate(QueryRegenerateEvent $event) : void{
-        $event->getQueryInfo()->setPlayerCount(Utils::getCachedPlayers()+ count($this->getServer()->getOnlinePlayers()));
-        $event->getQueryInfo()->setMaxPlayerCount(Utils::getCachedMaxPlayers()+ count($this->getServer()->getOnlinePlayers()));
+        $event->getQueryInfo()->setPlayerCount($this->players + count($this->getServer()->getOnlinePlayers()));
+        $event->getQueryInfo()->setMaxPlayerCount($this->maxPlayers + count($this->getServer()->getOnlinePlayers()));
     }
 
 }
