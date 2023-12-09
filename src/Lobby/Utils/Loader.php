@@ -6,17 +6,18 @@ use Lobby\Commands\joueur\CosmeticsCommand;
 use Lobby\Commands\joueur\LobbyCommand;
 use Lobby\Commands\joueur\TransferCommand;
 use Lobby\Commands\staff\NPCCommand;
+use Lobby\Commands\staff\OpenCommand;
 use Lobby\Entities\NPCEntity;
 use Lobby\Entities\TitleEntity;
 use Lobby\Events\Block\BlockBreak;
 use Lobby\Events\Block\BlockPlace;
 use Lobby\Events\Entity\EntityDamage;
 use Lobby\Events\inventory\InventoryTransaction;
-use Lobby\Events\Player\PlayerCreation;
 use Lobby\Events\Player\PlayerItemUse;
 use Lobby\Events\Player\PlayerJoin;
 use Lobby\Events\Player\PlayerMove;
 use Lobby\Events\Player\PlayerQuit;
+use Lobby\Events\Player\PlayerExhaust;
 use Lobby\Events\Player\PlayerChat;
 use Lobby\Main;
 use pocketmine\command\defaults\TransferServerCommand;
@@ -40,6 +41,7 @@ class Loader{
             new PlayerItemUse(),
             new PlayerChat(),
             new InventoryTransaction(),
+            new PlayerExhaust(),
             new PlayerMove()
         ];
 
@@ -57,7 +59,8 @@ class Loader{
             new NPCCommand(),
             new CosmeticsCommand(),
             new LobbyCommand(),
-            new TransferCommand()
+            new TransferCommand(),
+            new OpenCommand()
         ];
 
         foreach($commands as $cmd){

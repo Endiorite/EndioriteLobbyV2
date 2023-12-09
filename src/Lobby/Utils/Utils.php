@@ -7,6 +7,8 @@ use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\InvMenuTransaction;
 use muqsit\invmenu\transaction\InvMenuTransactionResult;
 use muqsit\invmenu\type\InvMenuTypeIds;
+use pocketmine\block\utils\DyeColor;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\entity\effect\SaturationEffect;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
@@ -66,45 +68,21 @@ class Utils {
         endif;
     }
 
-    public static function getPlayersCount(string $server): string|int{
-        $servers = Main::getInstance()->servers;
-        if((int)$servers[$server] <= -1){
+    public static function getPlayersCount(string $serverName): string|int{
+        $server = Main::getInstance()->servers;
+        if((int)$server[$serverName] <= -1){
             return "Error";
         }
-        return (int)$servers[$server];
+        return (int)$serverName[$serverName];
     }
 
     public static function addKitLobby(Player $player){
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
 
-        $item = VanillaItems::DIAMOND_SWORD();
-        $item->setCustomName("§r§cDuel §8§l|§r §7click-droit");
-        $player->getInventory()->setItem(0, $item);
-
-        $item = VanillaItems::GOLDEN_SWORD();
-        $item->setCustomName("§r§eFFA §8§l|§r §7click-droit");
-        $player->getInventory()->setItem(1, $item);
-
-        $item = VanillaItems::EMERALD();
-        $item->setCustomName("§r§6Cosmetics §8§l|§r §7click-droit");
-        $player->getInventory()->setItem(3, $item);
-
         $item = VanillaItems::COMPASS();
-        $item->setCustomName("§r§aMode de Jeux §8§l|§r §7click-droit");
+        $item->setCustomName("§r§aServeurs §8§l|§r §7click-droit");
         $player->getInventory()->setItem(4, $item);
-
-        $item = VanillaItems::FEATHER();
-        $item->setCustomName("§r§fBoost Plume §8§l|§r §7click-droit");
-        $player->getInventory()->setItem(5, $item);
-
-        $item = ItemFactory::getInstance()->get(404);
-        $item->setCustomName("§r§cParamètre §8§l|§r §7click-droit");
-        $player->getInventory()->setItem(7, $item);
-
-        $item = VanillaItems::PLAYER_HEAD();
-        $item->setCustomName("§r§eProfile §8§l|§r §7click-droit");
-        $player->getInventory()->setItem(8, $item);
 
     }
 
@@ -135,9 +113,9 @@ class Utils {
                 $player->getArmorInventory()->setBoots($boots);
 
                 $player->getInventory()->setItem(0, $sword);
-                $player->getInventory()->setItem(1, ItemFactory::getInstance()->get(ItemIds::GOLDEN_APPLE, 0, 10));
+                $player->getInventory()->setItem(1, VanillaItems::GOLDEN_APPLE()->setCount(10));
 
-                $splash = ItemFactory::getInstance()->get(VanillaItems::HEALING_SPLASH_POTION()->getId(), VanillaItems::HEALING_SPLASH_POTION()->getMeta(), 32);
+                $splash = VanillaItems::HEALING_SPLASH_POTION()->setCount(32);
                 $player->getInventory()->addItem($splash);
                 break;
 
@@ -164,47 +142,9 @@ class Utils {
                 $player->getArmorInventory()->setBoots($boots);
 
                 $player->getInventory()->setItem(0, $sword);
-                $player->getInventory()->setItem(1, ItemFactory::getInstance()->get(ItemIds::ENCHANTED_GOLDEN_APPLE, 0, 64));
+                $player->getInventory()->setItem(1, VanillaItems::ENCHANTED_GOLDEN_APPLE()->setCount(64));
             break;
         }
-    }
-
-    public static function gameInv(Player $player){
-        $inv = InvMenu::create(InvMenuTypeIds::TYPE_DOUBLE_CHEST);
-        $inv->setName("§aMode de Jeux");
-        $glass = ItemFactory::getInstance()->get(160, 1);
-        $inv->getInventory()->setItem(0, $glass);
-        $inv->getInventory()->setItem(1, $glass);
-
-        $inv->getInventory()->setItem(7, $glass);
-        $inv->getInventory()->setItem(8, $glass);
-
-        $inv->getInventory()->setItem(45, $glass);
-        $inv->getInventory()->setItem(46, $glass);
-
-        $inv->getInventory()->setItem(52, $glass);
-        $inv->getInventory()->setItem(53, $glass);
-
-        $pitch = VanillaItems::FISHING_ROD();
-        $pitch->setCustomName("§r§cPitchOut §e(bêta)");
-        $inv->getInventory()->setItem(31, $pitch);
-
-        $pName = $player->getName();
-        $inv->setListener(function (InvMenuTransaction $transaction) use ($pName): InvMenuTransactionResult {
-            $item = $transaction->getItemClicked();
-
-            if ($p = Server::getInstance()->getPlayerExact($pName)){
-                if ($item->getId() === ItemIds::FISHING_ROD){
-                    Server::getInstance()->dispatchCommand($p, "pitchout join");
-                    $p->removeCurrentWindow();
-
-                }
-            }
-
-            return $transaction->discard();
-        });
-
-        $inv->send($player);
     }
 
 }

@@ -4,6 +4,7 @@ namespace Lobby\Managers;
 
 use Lobby\Utils\Utils;
 use pocketmine\block\DiamondOre;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\VanillaItems;
@@ -27,7 +28,7 @@ class QueueManager{
 
         $player->getInventory()->clearAll();
         $player->getArmorInventory()->clearAll();
-        $door = ItemFactory::getInstance()->get(324);
+        $door = VanillaBlocks::DARK_OAK_DOOR()->asItem();
         $door->setCustomName("§7» §cQuitté la fille d'attente");
         $player->getInventory()->setItem(8, $door);
     }
@@ -46,7 +47,7 @@ class QueueManager{
             QueueManager::reindex($queue);
         }
 
-        $door = ItemFactory::getInstance()->get(324);
+        $door = VanillaBlocks::DARK_OAK_DOOR()->asItem();
         $door->setCustomName("§7» §cQuitté la fille d'attente");
         $player->getInventory()->remove($door);
 

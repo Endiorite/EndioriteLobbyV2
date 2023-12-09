@@ -36,15 +36,13 @@ class PlayerJoin implements Listener{
         $event->setJoinMessage("");
 
         Server::getInstance()->broadcastMessage("§b" . PrefixConstant::arrow . str_replace(["{player}"], [$player_name], MessageConstant::player_join));
-        $player->sendMessage("\n     §eBienvenue sur §9Endiorite Faction \n \n§7Vous êtes actuellement connecté sur le §cLobby #1\n§7A l'aide des §9PNJ §7et de la §9boussole §7vous pouvez intéragir entre les différents §1serveur§7\n \nBon jeu sur §9Endiorite §7!");
-        $player->sendPopup("§econnected from §fLobby §1#1");
+        $player->sendMessage("\n     §eBienvenue sur §9Endiorite Faction §eV3.5 (bêta)\n \n§7Vous êtes actuellement connecté sur le §cLobby #2\n§7A l'aide des §9PNJ §7et de la §9boussole §7vous pouvez intéragir entre les différents §1serveur§7\n \nBon jeu sur §9Endiorite §7!");
+        $player->sendPopup("§econnected from §fLobby §1#2");
         $player->sendMessage("§b" . PrefixConstant::arrow . "Tester notre nouveau mini-jeu, §7PitchOut Solo§f en §ebêta§f !");
 
         if(!$player->hasPlayedBefore()){
            Utils::sendAchievements($player, MessageConstant::achievement_title, MessageConstant::achievement_firstjoin);
         }
-
-        $player->teleport(Server::getInstance()->getWorldManager()->getWorldByName(WorldConstant::WORLD_LOBBY)->getSpawnLocation());
 
         Utils::addKitLobby($player);
         $player->setGamemode(GameMode::SURVIVAL());

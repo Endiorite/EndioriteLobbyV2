@@ -13,8 +13,8 @@ class UpdatePlayers extends AsyncTask
 {
 
     public function onRun() : void{
-        $res = ['count' => 0, 'maxPlayers' => 0, 'servers' => ["minestia" => 0, "arazia" => 0, "minage" => 0]];
-        foreach(["endiorite.com:19133:minestia", "endiorite.com:19134:arazia", "endiorite.com:19136:minage", "endiorite.com:19137:minage"] as $serverConfigString){
+        $res = ['count' => 0, 'maxPlayers' => 0, 'servers' => ["minestia" => 0, "arazia" => 0, "minage1" => 0, "minage2" => 0, "minage3" => 0]];
+        foreach(["45.158.77.31:19133:minestia", "45.158.77.31:19134:arazia", "45.145.166.33:19138:minage1", "45.145.166.33:19130:minage2", "45.145.166.33:19139:minage3"] as $serverConfigString){
             $serverData = explode(':', $serverConfigString);
             $ip = $serverData[0];
             $port = (int) $serverData[1];
@@ -37,7 +37,7 @@ class UpdatePlayers extends AsyncTask
 
     public function onCompletion() : void{
         $res = $this->getResult();
-
+        $cfg = new Config("/home/container/plugin_data/EndioriteLobby/cached.yml", Config::YAML);
         Main::getInstance()->players = $res['count'];
         Main::getInstance()->maxPlayers = $res['maxPlayers'];
         Main::getInstance()->servers = $res['servers'];

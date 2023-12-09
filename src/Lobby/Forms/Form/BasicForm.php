@@ -2,59 +2,91 @@
 
 namespace Lobby\Forms\Form;
 
+use Lobby\Constants\PrefixConstant;
 use Lobby\Forms\FormAPI\SimpleForm;
 use Lobby\Main;
 use Lobby\Utils\Utils;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\SingletonTrait;
-use vezdehod\packs\ContentFactory;
-use vezdehod\packs\ui\jsonui\binding\Binding;
-use vezdehod\packs\ui\jsonui\binding\BindingType;
-use vezdehod\packs\ui\jsonui\binding\DataBinding;
-use vezdehod\packs\ui\jsonui\element\CustomElement;
-use vezdehod\packs\ui\jsonui\element\ImageElement;
-use vezdehod\packs\ui\jsonui\element\ScreenElement;
-use vezdehod\packs\ui\jsonui\element\StackPanelElement;
-use vezdehod\packs\ui\jsonui\element\types\Anchor;
-use vezdehod\packs\ui\jsonui\element\types\FontType;
-use vezdehod\packs\ui\jsonui\element\types\Offset;
-use vezdehod\packs\ui\jsonui\element\types\Orientation;
-use vezdehod\packs\ui\jsonui\element\types\PropertyBag;
-use vezdehod\packs\ui\jsonui\element\types\Rotation;
-use vezdehod\packs\ui\jsonui\element\types\Size;
-use vezdehod\packs\ui\jsonui\element\types\TextAlignment;
-use vezdehod\packs\ui\jsonui\vanilla\form\SimpleFormStyle;
+use Endiorite\Constants\CustomUserInterface;
 
 class BasicForm{
-
-    public static function ffa(Player $player){
+    
+    public static function server(Player $player){
         $form = self::createSimpleForm(function (Player $player, int $data = null){
             $result = $data;
             if($result === null){
                 return true;
             }
-
-            switch ($result){
+            
+            switch($result){
                 case 0:
-                    //$player->teleport(Server::getInstance()->getWorldManager()->getWorldByName("FFA2")->getSafeSpawn());
-                break;
-
-                case 1:
-                    //$player->teleport(Server::getInstance()->getWorldManager()->getWorldByName("COMBO")->getSafeSpawn());
-                break;
+                    $player->transfer("45.158.77.31", 19137);
+                    break;
+               	case 1:
+                    $player->transfer("arazia");
+                    break;
+              	case 2:
+                    $player->transfer("minestia");
+                    break;
+                case 4:
+                case 3:
+                    $minages = [
+                        "minage1" => 19138,
+                        "minage2" => 19130,
+                        "minage3" => 19139
+                    ];
+                    $minage = array_rand($minages);
+                    while(count($minages) > 0){
+                        if(Utils::getPlayersCount($minage) >= 20){
+                            unset($minages[$minage]);
+                            if(empty($minages))
+                            {
+                                break;
+                            }else{
+                            	$minage = array_rand($minages);
+                            }
+                            continue;
+                        }
+                    
+                        break;
+                    }
+                
+                    if(count($minages) > 0){
+                        $player->transfer($minage);
+                    }else{
+                        $player->sendMessage(PrefixConstant::error_prefix . "§cLes minages sont pleins ! revenez plus tard...");
+                    }
+                    break;
             }
 
-            //Utils::ffaKit($player, $result);
 
             return true;
 
         });
-        $form->setTitle("§e§lFFA");
-        $form->addButton("§l§7BASIC", 0,"textures/items/diamond_sword");
-        $form->addButton("§l§7COMBO", 0,"textures/items/golden_apple");
-
+        $form->setTitle(self::getDeviceOS($player));
+        $form->addButton("farmland");
+        $form->addButton("imbali");
+        $form->addButton("manashino");
+        $form->addButton("minage");
+        $form->addButton("untaa");
         $player->sendForm($form);
+    }
+    
+    public static function getDeviceOS($player){
+        $device = $player->getPlayerInfo()->getExtraData()["DeviceOS"];
+        $title = "fr.endiorite.server";
+        if($device == 11){
+            $title = "Serveur"; 
+        }
+        if($device == 12){
+            $title = "Serveur"; 
+        }
+        if($device == 13){
+            $title = "Serveur";
+        }
+        return $title;
     }
 
     public static function test(Player $player){

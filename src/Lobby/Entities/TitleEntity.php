@@ -20,7 +20,7 @@ class TitleEntity extends Human {
         $this->setNameTagAlwaysVisible(false);
         $this->gravityEnabled = false;
         $this->setScale(3.5);
-        $this->setImmobile();
+        $this->setNoClientPredictions();
     }
 
     protected function initEntity(CompoundTag $nbt) : void {
@@ -28,7 +28,7 @@ class TitleEntity extends Human {
         $this->setNameTagAlwaysVisible(false);
         $this->gravityEnabled = false;
         $this->setScale(3.5);
-        $this->setImmobile();
+        $this->setNoClientPredictions();
     }
 
     public function attack(EntityDamageEvent $source) : void {

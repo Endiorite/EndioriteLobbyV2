@@ -9,6 +9,7 @@ use Lobby\Forms\Form\BasicForm;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\permission\DefaultPermissionNames;
 use pocketmine\player\Player;
 
 class CosmeticsCommand extends Command
@@ -16,6 +17,7 @@ class CosmeticsCommand extends Command
 
     public function __construct() {
         parent::__construct("cosmetics", "", "/cosmetics", ["cosmetic", "cosmetique"]);
+        $this->setPermission(DefaultPermissionNames::COMMAND_TELL);
     }
 
     public function execute(CommandSender|Player $sender, string $commandLabel, array $args): void{

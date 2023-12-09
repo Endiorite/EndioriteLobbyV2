@@ -6,6 +6,7 @@ use Lobby\Managers\AntiMultiManager;
 use Lobby\Tasks\QueueTask;
 use Lobby\Tasks\UpdateTask;
 use Lobby\Utils\Loader;
+use Lobby\Tasks\RepeatedTask;
 use Lobby\Utils\Utils;
 use muqsit\invmenu\InvMenuHandler;
 use pocketmine\event\Listener;
@@ -15,14 +16,16 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\world\World;
-use vezdehod\packs\ContentFactory;
-use vezdehod\packs\PluginContent;
 
 class Main extends PluginBase implements Listener {
     use SingletonTrait;
 
     public static array $connected = [];
-    public static ?PluginContent $content;
+    public static array $OPEN = [
+        "minestia" => true,
+        "minage" => true,
+        "arazia" => true
+    ];
 
     public int $players = 0;
     public int $maxPlayers = 50;
@@ -34,12 +37,8 @@ class Main extends PluginBase implements Listener {
     }
 
     protected function onEnable() : void {
-        if(!InvMenuHandler::isRegistered()){
-            InvMenuHandler::register($this);
-        }
 
         self::$instance = $this;
-        $this->saveResource("cached.yml");
         $this->saveResource("texture.png");
         $this->saveResource("endiorite_title.geo.json");
         $this->getScheduler()->scheduleRepeatingTask(new UpdateTask(), 30 * 20);
@@ -59,11 +58,6 @@ class Main extends PluginBase implements Listener {
 
         Server::getInstance()->getWorldManager()->getDefaultWorld();
 
-    }
-
-    public function queryRegenerate(QueryRegenerateEvent $event) : void{
-        $event->getQueryInfo()->setPlayerCount($this->players + count($this->getServer()->getOnlinePlayers()));
-        $event->getQueryInfo()->setMaxPlayerCount($this->maxPlayers + count($this->getServer()->getOnlinePlayers()));
     }
 
 }

@@ -6,13 +6,13 @@ use Lobby\Constants\WorldConstant;
 use Lobby\Forms\Form\BasicForm;
 use Lobby\Managers\QueueManager;
 use Lobby\Utils\Utils;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerItemUseEvent;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
-use pocketmine\item\ItemFactory;
-use pocketmine\item\ItemIds;
 use pocketmine\item\VanillaItems;
+use pocketmine\item\StringToItemParser;
 use pocketmine\Server;
 
 class PlayerItemUse implements Listener {
@@ -23,21 +23,19 @@ class PlayerItemUse implements Listener {
         $player = $event->getPlayer();
         $playerName = $event->getPlayer()->getName();
 
-        if($player->getWorld()->getFolderName() !== WorldConstant::WORLD_LOBBY) return;
-
-        if($item->getId() == 324 && $item->getMeta() == 0){
+        if($item instanceof (VanillaBlocks::DARK_OAK_DOOR()->asItem())){
             if(QueueManager::getCurrentQueue($player) !== false){
                 QueueManager::removePlayerToQueue($player, QueueManager::getCurrentQueue($player));
                 $player->sendMessage("§9§lEndiorite §r§7» Vous avez bien quitté la §9file d'attente");
             }
         }
 
-        if ($item->getId() === ItemIds::COMPASS){
-            Utils::gameInv($player);
+        if ($item->getTypeId() === StringToItemParser::getInstance()->parse("compass")->getTypeId()){
+            BasicForm::server($player);
             return;
         }
 
-        if ($item->getId() === ItemIds::FEATHER){
+        if ($item instanceof (VanillaItems::FEATHER())){
             $motions = clone $player->getMotion();
 
             $motions->x += $player->getDirectionVector()->getX() * 1.4;
@@ -46,18 +44,6 @@ class PlayerItemUse implements Listener {
 
             $player->setMotion($motions);
 
-        }
-
-        if ($item->getId() === ItemIds::EMERALD){
-            Server::getInstance()->dispatchCommand($player, "cosmetics");
-        }
-
-        //if ($item->getId() === ItemIds::FISHING_ROD){
-        //    Server::getInstance()->dispatchCommand($player, "pitchout join");
-        //}
-
-        if($item->getId() === ItemIds::GOLDEN_SWORD){
-            BasicForm::ffa($player);
         }
     }
 }

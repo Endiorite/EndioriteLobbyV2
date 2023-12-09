@@ -15,8 +15,8 @@ class MessageConstant{
     const achievement_firstjoin = "Rejoindre pour la première fois le §cserver§f !";
 
     ##### Player Join #####
-    const player_join = "§a{player}§e s'est connecté au §l§fLobby §1#1 §r§e!";
-    const player_quit = "§c{player}§e s'est deconnecté du §l§fLobby §1#1 §r§e!";
+    const player_join = "§a{player}§e s'est connecté au §l§fLobby §1#2 §r§e!";
+    const player_quit = "§c{player}§e s'est deconnecté du §l§fLobby §1#2 §r§e!";
 
     ##### Message #####
     const in_transfer = "§9Connection au serveur §1§l{server} §r§9...";

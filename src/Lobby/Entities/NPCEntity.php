@@ -13,6 +13,7 @@ use pocketmine\entity\Location;
 use pocketmine\entity\Skin;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\player\Player;
@@ -40,7 +41,7 @@ class NPCEntity extends Human {
             break;
 
             case "minage":
-                $this->setNameTag("§8" . PrefixConstant::arrow . "§l§fServeur §1Minage§r\n§aEn attente ". QueueManager::playerCountInQueue($this->getType()) ."/50\n§c". Utils::getPlayersCount("minage") ." §7Joueurs\n§eClick ici");
+                $this->setNameTag("§8" . PrefixConstant::arrow . "§l§fServeur §1Minage§r\n§aEn attente ". QueueManager::playerCountInQueue($this->getType()) ."/50\n§c". Utils::getPlayersCount("minage1")+Utils::getPlayersCount("minage2") ." §7Joueurs\n§eClick ici");
             break;
 
             case "kitmap":
@@ -96,18 +97,23 @@ class NPCEntity extends Human {
         if($source instanceof EntityDamageByEntityEvent){
             $player = $source->getDamager();
             if($player instanceof Player){
-                if($player->getInventory()->getItemInHand()->getId() === 511){
+                if($player->getInventory()->getItemInHand() instanceof (VanillaItems::RECORD_WAIT())){
                     $this->kill();
                     $this->flagForDespawn();
                     $this->close();
                     return;
                 }
 
-                if(QueueManager::getCurrentQueue($player) === false){
-                    QueueManager::addPlayerToQueue($player, $this->getType());
-                    $player->sendMessage("§9§lEndiorite §r§7»§f Vous avez bien rejoins la §9file d'attente\n§7» §o§fClick droit avec la porte dans votre inventaire pour quitté la fille d'attente");
+                if (isset(Main::$OPEN[$this->getType()]) && Main::$OPEN[$this->getType()]){
+                    /*if(QueueManager::getCurrentQueue($player) === false){
+                        QueueManager::addPlayerToQueue($player, $this->getType());
+                        $player->sendMessage("§9§lEndiorite §r§7»§f Vous avez bien rejoins la §9file d'attente\n§7» §o§fClick droit avec la porte dans votre inventaire pour quitté la fille d'attente");
+                    }else{
+                        $player->sendMessage("§9§lEndiorite §r§7»§f Vous êtes déjà dans une §9file d'attente§f");
+                    }*/
+                    self::transfer($player, $this->getType());
                 }else{
-                    $player->sendMessage("§9§lEndiorite §r§7»§f Vous êtes déjà dans une §9file d'attente§f");
+                    $player->sendMessage("§9§lEndiorite §r§7»§f Les servers sont actuellement fermer !");
                 }
             }
         }
@@ -125,13 +131,27 @@ class NPCEntity extends Human {
                 break;
 
             case "minage":
-                $rdm = mt_rand(2,2);
-                $port = match ($rdm){
-                    1 => "19136",
-                    2 => "19137"
-                };
-
-                NPCEntity::transferWithIp("minage" . $rdm, $port, "§fMinage n°§1" . $rdm, $player);
+                $minages = [
+                    "minage1" => 19138,
+                    "minage2" => 19130,
+                    "minage3" => 19139
+                ];
+                $minage = array_rand($minages);
+                while(count($minages) > 0){
+                    if(Utils::getPlayersCount($minage) >= 50){
+                        unset($minages[$minage]);
+                        $minage = array_rand($minages);
+                        continue;
+                    }
+                    
+                    break;
+                }
+                
+                if(count($minages) > 0){
+                    NPCEntity::transferWithIp($minage, $minages[$minage], "§fMinage n°§1" . substr($minage, -1), $player);
+                }else{
+                    $player->sendMessage(PrefixConstant::error_prefix . "§cLes minages sont pleins ! revenez plus tard...");
+                }
                 break;
 
             case "kitmap":
@@ -151,7 +171,7 @@ class NPCEntity extends Human {
                     }
                     $p->transfer($server);
                 }
-            }), 3*20);
+            }), 1/**3*20**/);
         }else{
            $player->sendMessage(PrefixConstant::error_prefix . str_replace("{server}", $serverName, MessageConstant::server_is_offline));
         }
